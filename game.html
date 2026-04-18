@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bakery Rush Game</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        heading: ['Playfair Display', 'serif'],
+        body: ['Poppins', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+
+</head>
+
+<body class="bg-pink-50 font-body overflow-x-hidden">
+
+<nav class="bg-white/80 backdrop-blur-md text-gray-800 p-4 flex items-center justify-between shadow-md">
+
+  <img src="img/logo.png" class="h-10 w-auto">
+
+  <div class="flex space-x-6 text-sm md:text-base">
+    <a href="index.html" class="text-pink-500 hover:text-pink-900">Home</a>
+    <a href="about.html" class="text-pink-500 hover:text-pink-900">About</a>
+    <a href="Service.html" class="text-pink-500 hover:text-pink-900">Services</a>
+    <a href="game.html" class="text-pink-700 font-semibold">Game</a>
+  </div>
+
+</nav>
+
+<div class="text-center mt-10">
+  <h1 class="text-3xl font-bold text-pink-600">Bakery Rush 🍰</h1>
+  <p class="text-gray-600">Follow the order correctly and win a voucher!</p>
+</div>
+
+<div class="bg-white w-[350px] p-4 rounded-xl shadow border mx-auto mt-6">
+  <p class="text-sm text-gray-500">Order:</p>
+  <div id="order" class="text-2xl mt-2"></div>
+</div>
+
+<div class="bg-white w-[350px] p-4 rounded-xl shadow border mx-auto mt-4">
+  <p class="text-sm text-gray-500">Your Selection:</p>
+  <div id="player" class="text-2xl mt-2 text-pink-500"></div>
+</div>
+
+<div class="flex justify-center gap-4 mt-4">
+  <button onclick="selectItem('🍓')" class="text-2xl bg-pink-200 p-3 rounded-lg hover:scale-110 transition">🍓</button>
+  <button onclick="selectItem('🍫')" class="text-2xl bg-yellow-200 p-3 rounded-lg hover:scale-110 transition">🍫</button>
+  <button onclick="selectItem('🍦')" class="text-2xl bg-gray-200 p-3 rounded-lg hover:scale-110 transition">🍦</button>
+</div>
+
+<div class="flex justify-center gap-6 mt-6 font-semibold">
+  <p>Score: <span id="score">0</span></p>
+  <p>Lives: <span id="lives">3</span></p>
+  <p>Time: <span id="time">10</span>s</p>
+</div>
+
+<div class="text-center mt-4">
+  <p id="voucherMsg" class="text-pink-600 font-semibold"></p>
+</div>
+
+<div id="result" class="mt-6 text-center text-xl font-bold text-pink-600 hidden"></div>
+
+<div class="text-center mt-4">
+  <button onclick="startGame()"
+    class="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600">
+    Start Game
+  </button>
+</div>
+
+<div class="relative -mb-1 rotate-180">
+  <svg viewBox="0 0 1440 120" class="w-full h-[100px]" preserveAspectRatio="none">
+    <path fill="#fff"
+      d="M0,64L60,85.3C120,107,240,149,360,138.7C480,128,600,64,720,53.3C840,43,960,85,1080,106.7C1200,128,1320,128,1380,128L1440,128L1440,0L0,0Z">
+    </path>
+  </svg>
+</div>
+
+<footer class="bg-white text-center py-12 px-6">
+
+  <h3 class="text-2xl md:text-3xl font-bold text-pink-700">
+    Sweet Crumbs Bakery
+  </h3>
+
+  <p class="text-gray-600 mt-2 text-sm md:text-base">
+    Baked with love, served with sweetness
+  </p>
+
+  <div class="mt-6 space-y-2 text-gray-700 text-sm">
+    <p class="flex justify-center items-center space-x-2">
+      <i class="fa-solid fa-phone text-pink-500"></i>
+      <span>0912-345-6789</span>
+    </p>
+
+    <p class="flex justify-center items-center space-x-2">
+      <i class="fa-solid fa-envelope text-pink-500"></i>
+      <span>sweetcrumbs@email.com</span>
+    </p>
+
+    <p class="flex justify-center items-center space-x-2">
+      <i class="fa-solid fa-location-dot text-pink-500"></i>
+      <span>Imus, Cavite</span>
+    </p>
+  </div>
+
+  <div class="flex justify-center space-x-5 mt-6 text-xl">
+    <a href="#" class="text-pink-500 hover:text-pink-700 hover:scale-110 transition">
+      <i class="fa-brands fa-facebook"></i>
+    </a>
+
+    <a href="#" class="text-pink-500 hover:text-pink-700 hover:scale-110 transition">
+      <i class="fa-brands fa-instagram"></i>
+    </a>
+
+    <a href="#" class="text-pink-500 hover:text-pink-700 hover:scale-110 transition">
+      <i class="fa-brands fa-tiktok"></i>
+    </a>
+  </div>
+
+  <p class="text-gray-400 text-xs mt-8">
+    © 2026 Sweet Crumbs Bakery. All rights reserved.
+  </p>
+
+</footer>
+
+<script>
+
+const orderDisplay = document.getElementById("order");
+const playerDisplay = document.getElementById("player");
+const resultDisplay = document.getElementById("result");
+const scoreDisplay = document.getElementById("score");
+const livesDisplay = document.getElementById("lives");
+const timeDisplay = document.getElementById("time");
+const voucherMsg = document.getElementById("voucherMsg");
+
+const items = ["🍓", "🍫", "🍦"];
+
+let order = [];
+let player = [];
+let score = 0;
+let lives = 3;
+let time = 10;
+let gameRunning = false;
+let timer;
+let voucherEarned = false;
+
+function generateOrder(length) {
+  order = [];
+  for (let i = 0; i < length; i++) {
+    order.push(items[Math.floor(Math.random() * items.length)]);
+  }
+  orderDisplay.textContent = order.join(" ");
+  player = [];
+  playerDisplay.textContent = "";
+}
+
+function startGame() {
+  clearInterval(timer);
+
+  score = 0;
+  lives = 3;
+  time = 10;
+  gameRunning = true;
+  voucherEarned = false;
+
+  voucherMsg.textContent = "";
+  resultDisplay.classList.add("hidden");
+
+  updateUI();
+  generateOrder(3);
+  startTimer();
+}
+
+function startTimer() {
+  timer = setInterval(() => {
+
+    if (!gameRunning) return clearInterval(timer);
+
+    time--;
+    timeDisplay.textContent = time;
+
+    if (time <= 0) {
+      lives--;
+      updateUI();
+
+      if (lives <= 0) return endGame();
+
+      time = 10;
+      generateOrder(order.length);
+    }
+
+  }, 1000);
+}
+
+function selectItem(item) {
+  if (!gameRunning) return;
+
+  player.push(item);
+  playerDisplay.textContent = player.join(" ");
+
+  let i = player.length - 1;
+
+  if (player[i] !== order[i]) {
+    lives--;
+    updateUI();
+
+    if (lives <= 0) return endGame();
+
+    player = [];
+    playerDisplay.textContent = "";
+    return;
+  }
+
+  if (player.length === order.length) {
+    score++;
+    updateUI();
+
+    generateOrder(Math.min(6, order.length + 1));
+    time = 10;
+
+    if (score === 5 && !voucherEarned) {
+      voucherEarned = true;
+
+      const vouchers = [
+        "SWEET10 - 10% OFF",
+        "CAKEFREE - Free Slice",
+        "BAKERYVIP - VIP Discount",
+        "SUGAR50 - 50 OFF Coupon"
+      ];
+
+      let reward = vouchers[Math.floor(Math.random() * vouchers.length)];
+      voucherMsg.textContent = "🎁 You earned: " + reward;
+    }
+  }
+}
+
+function updateUI() {
+  scoreDisplay.textContent = score;
+  livesDisplay.textContent = lives;
+}
+
+function endGame() {
+  gameRunning = false;
+  clearInterval(timer);
+
+  resultDisplay.classList.remove("hidden");
+
+  let message = `Game Over! Score: ${score}`;
+
+  if (voucherEarned) {
+    message += `<br><br>🎁 Voucher: ${voucherMsg.textContent}`;
+  } else {
+    message += `<br><br>No voucher earned. NT, bang!`;
+  }
+
+  resultDisplay.innerHTML = message;
+}
+
+</script>
+
+</body>
+</html>
